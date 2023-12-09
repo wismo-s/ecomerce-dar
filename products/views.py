@@ -78,6 +78,7 @@ class CategoryDetailViewSet(views.APIView):
         serializerCategory = CategorySerializer(category)
         return Response({'category': serializerCategory.data, 'products': serializerProducts.data}, status=status.HTTP_200_OK)
     
+
 class ChoisesViewSet(views.APIView):
     def get(self, request):
         list_choises = Choises.objects.all()
