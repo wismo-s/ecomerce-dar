@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAdminUser, AllowAny
 from .models import Products, Category, Choises
-from .serializers import ProductSerializer, CategorySerializer, ChoisesSerializer
+from .serializers import ProductSerializer, CategorySerializer, ChoisesSerializer, ProductListSerializer
 
 # Create your views here.
 class ProductsViewSet(views.APIView):
@@ -13,7 +13,7 @@ class ProductsViewSet(views.APIView):
     permission_classes = [AllowAny,]
     def get(self, request):
         list_products = Products.objects.all() 
-        serializer = ProductSerializer(list_products, many=True)
+        serializer = ProductListSerializer(list_products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class ProductsManageViewSet(views.APIView):
