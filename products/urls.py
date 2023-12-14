@@ -13,5 +13,4 @@ urlpatterns = [
     path('admin/opciones/', ChoisesManageViewSet.as_view(), name='admin-choises'),
 ]
 
-
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
