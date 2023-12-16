@@ -49,7 +49,23 @@ class PoductsDetailViewSet(views.APIView):
         except:
             return Response({'error': 'error'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = ProductSerializer(product)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        serializerEdit = serializer.data
+        
+        category = serializer.data['category']
+        categoryModel = Category.objects.get(id=category)
+        categorySerialixer = CategorySerializer(categoryModel)
+        serializerEdit['category'] = categorySerialixer.data['title']
+        
+        choises = serializer.data['choises']
+        choisesList = []
+        for choise_id in choises:
+            choise = Choises.objects.get(id=choise_id)
+            choisesSerializer = ChoisesSerializer(choise)
+            choisesList.append({choise_id: choisesSerializer.data['options']})
+        serializerEdit['choises'] = choisesList
+        
+        return Response(serializerEdit, status=status.HTTP_200_OK)
     
 class CategoryViewSet(views.APIView):
     authentication_classes = []
