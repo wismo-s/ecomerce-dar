@@ -31,7 +31,10 @@ class CategorySerializer(serializers.ModelSerializer):
         category = Category.objects.create(title=data['title'])
         category.save()
         return category
-
+class CategoryListSerializerSlug(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['title', 'slug']
 class ChoisesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Choises

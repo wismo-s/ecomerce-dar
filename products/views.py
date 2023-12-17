@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAdminUser, AllowAny
 from .models import Products, Category, Choises
-from .serializers import ProductSerializer, CategorySerializer, ChoisesSerializer, ProductListSerializer
+from .serializers import ProductSerializer, CategorySerializer, ChoisesSerializer, ProductListSerializer, CategoryListSerializerSlug
 
 # Create your views here.
 class ProductsViewSet(views.APIView):
@@ -54,15 +54,16 @@ class PoductsDetailViewSet(views.APIView):
         
         category = serializer.data['category']
         categoryModel = Category.objects.get(id=category)
-        categorySerialixer = CategorySerializer(categoryModel)
+        categorySerialixer = CategoryListSerializerSlug(categoryModel)
         serializerEdit['category'] = categorySerialixer.data['title']
+        serializerEdit['category_slug'] = categorySerialixer.data['slug']
         
         choises = serializer.data['choises']
         choisesList = []
         for choise_id in choises:
             choise = Choises.objects.get(id=choise_id)
             choisesSerializer = ChoisesSerializer(choise)
-            choisesList.append({choise_id: choisesSerializer.data['options']})
+            choisesList.append({'id': choise_id, 'option': choisesSerializer.data['options']})
         serializerEdit['choises'] = choisesList
         
         return Response(serializerEdit, status=status.HTTP_200_OK)
@@ -107,9 +108,9 @@ class CategoryDetailViewSet(views.APIView):
             products = Products.objects.filter(category=category)
         except:
             return Response({'error': 'error'}, status=status.HTTP_400_BAD_REQUEST)
-        serializerProducts = ProductSerializer(products, many=True)
+        serializerProducts = ProductListSerializer(products, many=True)
         serializerCategory = CategorySerializer(category)
-        return Response({'category': serializerCategory.data, 'products': serializerProducts.data}, status=status.HTTP_200_OK)
+        return Response({'category': serializerCategory.data['title'], 'products': serializerProducts.data}, status=status.HTTP_200_OK)
     
 
 
