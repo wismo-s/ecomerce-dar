@@ -2,17 +2,22 @@ from rest_framework import views
 from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth import login, logout
+from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated , AllowAny
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from .models import CustomUser
 from .serializers import CustomUserCreateSerializer, LoginSerializer, UserModelSerializer, CustomUserSerializer
 
+USER_MODEL = get_user_model()
 # Create your views here.
 class CustomUserCreateView(views.APIView):
     authentication_classes = []
     permission_classes = [AllowAny,]
     def post(self, request, *args, **kwargs):
+        user_exist = USER_MODEL.objects.filter(username=request.data['username'])
+        if user_exist:
+            return Response({'message': 'el usuario ya existe'}, status=status.HTTP_400_BAD_REQUEST)
         serializer = CustomUserCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

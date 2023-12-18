@@ -25,12 +25,12 @@ class CustomUserCreateSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=150)
     last_name = serializers.CharField(max_length=150)
     password = serializers.CharField(max_length=150)
-    distric = serializers.CharField(max_length=125)
-    department = serializers.CharField(max_length=80)
-    reference = serializers.CharField(max_length=150)
-    direction = serializers.CharField(max_length=300)
+    distric = serializers.CharField(max_length=125, allow_null=True, allow_blank=True, default='')
+    department = serializers.CharField(max_length=80, allow_null=True, allow_blank=True, default='')
+    reference = serializers.CharField(max_length=150, allow_null=True, allow_blank=True, default='')
+    direction = serializers.CharField(max_length=300, allow_null=True, allow_blank=True, default='')
     phone = serializers.CharField(max_length=20)
-    postal_code = serializers.CharField(max_length=10)
+    postal_code = serializers.CharField(max_length=10, allow_null=True, allow_blank=True, default='')
     
     def create(self, validated_data):
         user_intance = USER_MODEL.objects.create_user(
