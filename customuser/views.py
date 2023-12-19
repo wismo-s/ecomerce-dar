@@ -31,8 +31,9 @@ class CustomUserView(views.APIView):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             user = request.user
-            serializer = UserModelSerializer(user)
-            if serializer.is_valid(raise_exception=True):
+            userdata = USER_MODEL.objects.get(username=user)    
+            if userdata:
+                serializer = UserModelSerializer(userdata)
                 extra_data = CustomUser.objects.get(user=user)
                 serializer_extradata = CustomUserSerializer(extra_data)
                 response = {**serializer.data, **serializer_extradata.data}
