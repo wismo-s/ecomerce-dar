@@ -17,13 +17,14 @@ class CustomUserCreateView(views.APIView):
     def post(self, request, *args, **kwargs):
         user_exist = USER_MODEL.objects.filter(username=request.data['username'])
         if user_exist:
-            return Response({'message': 'el usuario ya existe'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(['el usuario ya existe'], status=status.HTTP_400_BAD_REQUEST)
         serializer = CustomUserCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'Usuario creado correctamente'}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
         
 class CustomUserView(views.APIView):
     authentication_classes = [TokenAuthentication, SessionAuthentication]
@@ -40,19 +41,21 @@ class CustomUserView(views.APIView):
                 return Response(response, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'message': 'usuario no esta authentificado'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(['usuario no esta authentificado'], status=status.HTTP_401_UNAUTHORIZED)
         
     def put(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             user = request.user
-            serializer = CustomUserCreateSerializer(user, data=request.data)
-            if serializer.is_valid():
+            userdata = USER_MODEL.objects.get(username=user)
+            data = {'username':  str(user), **request.data}
+            serializer = UserModelSerializer(instance=userdata, data=data)
+            if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response({'message': 'Usuario actualizado correctamente'}, status=status.HTTP_200_OK)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'message': 'Usuario no authentificado'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(['usuario no esta authentificado'], status=status.HTTP_401_UNAUTHORIZED)
         
     def delete(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -60,7 +63,23 @@ class CustomUserView(views.APIView):
             user.delete()
             return Response({'message': 'Usuario eliminado correctamente'}, status=status.HTTP_200_OK)
         else:
-            return Response({'message': 'Usuario no authentificado'}, status=status.HTTP_401_UNAUTHORIZED)     
+            return Response(['usuario no esta authentificado'], status=status.HTTP_401_UNAUTHORIZED)   
+class EditCustomUserViewDetail(views.APIView):  
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated,]
+    
+    def put(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            user = request.user
+            userdata = CustomUser.objects.get(user__username=user)
+            serializer = CustomUserSerializer(instance=userdata, data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response({'message': 'Usuario actualizado correctamente'}, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(['usuario no esta authentificado'], status=status.HTTP_401_UNAUTHORIZED)
 
 class CustomUserLoginView(views.APIView):
     authentication_classes = []
@@ -73,8 +92,7 @@ class CustomUserLoginView(views.APIView):
             login(request, user)
             token, created = Token.objects.get_or_create(user=user)
             return Response({'message': 'ingreso correctamente', 'token': token.key}, status=status.HTTP_200_OK)
-        else:
-            return Response({'message': 'el usuario o contrasena no es corretco'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(['el usuario o contrasena no es corretco'], status=status.HTTP_404_NOT_FOUND)
 
 class CustomUserLogoutView(views.APIView):
     authentication_classes = [TokenAuthentication, SessionAuthentication]

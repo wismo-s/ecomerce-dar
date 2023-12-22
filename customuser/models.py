@@ -9,6 +9,6 @@ class CustomUser(models.Model):
     department = models.CharField(max_length=80, blank=True, null=False)
     reference = models.CharField(max_length=150, blank=True, null=False)
     direction = models.CharField(max_length=300, blank=True, null=False)
-    phone = models.CharField(max_length=20, blank=False, null=False)
+    phone = models.CharField(max_length=20, blank=True, null=True)
     postal_code = models.CharField(max_length=10, blank=True, null=False)
     

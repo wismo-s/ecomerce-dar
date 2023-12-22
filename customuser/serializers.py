@@ -9,12 +9,26 @@ class UserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = USER_MODEL
         fields = ('username', 'email', 'first_name', 'last_name',)
-        
+    def update(self, instance, data):
+        instance.email = data.get('email', instance.email)
+        instance.first_name = data.get('first_name', instance.first_name)
+        instance.last_name = data.get('last_name', instance.last_name)
+        instance.save()
+        return instance   
         
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('distric', 'department', 'reference', 'direction', 'phone', 'postal_code',)
+    def update(self, instance, validated_data):
+        instance.distric = validated_data.get('distric', instance.distric)
+        instance.department = validated_data.get('department', instance.department)
+        instance.reference = validated_data.get('reference', instance.reference)
+        instance.direction = validated_data.get('direction', instance.direction)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.postal_code = validated_data.get('postal_code', instance.postal_code)
+        instance.save()
+        return instance
         
 class CustomUserCreateSerializer(serializers.Serializer):
     class Meta:
