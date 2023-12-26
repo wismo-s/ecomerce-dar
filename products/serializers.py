@@ -9,7 +9,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
-        fields = ['title', 'price', 'discount', 'category','description', 'choises', 'port_img', 'firts_img', 'second_img', 'third_img','four_img']
+        fields = ['id' ,'title', 'price', 'discount', 'category','description', 'choises', 'port_img', 'firts_img', 'second_img', 'third_img','four_img']
         
     def create(self, data):
         category = Category.objects.get(id=data['category'])
