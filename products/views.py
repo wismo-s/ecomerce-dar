@@ -9,16 +9,16 @@ from .serializers import ProductSerializer, CategorySerializer, ChoisesSerialize
 
 # Create your views here.
 class ProductsViewSet(views.APIView):
-    authentication_classes = []
-    permission_classes = [AllowAny,]
+    #authentication_classes = []
+    #permission_classes = [AllowAny,]
     def get(self, request):
         list_products = Products.objects.all() 
         serializer = ProductListSerializer(list_products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class ProductsManageViewSet(views.APIView):
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
-    permission_classes = [IsAdminUser,]
+    #authentication_classes = [TokenAuthentication, SessionAuthentication]
+    #permission_classes = [IsAdminUser,]
     
     def post(self, request):
         data = request.data
@@ -77,8 +77,8 @@ class CategoryViewSet(views.APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class CategoryManageViewSet(views.APIView):
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
-    permission_classes = [IsAdminUser,]
+   # authentication_classes = [TokenAuthentication, SessionAuthentication]
+    #permission_classes = [IsAdminUser,]
     def post(self, request):
         data = request.data
         serializer = CategorySerializer(data=data)
@@ -123,8 +123,8 @@ class ChoisesViewSet(views.APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class ChoisesManageViewSet(views.APIView):
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
-    permission_classes = [IsAdminUser,]
+    #authentication_classes = [TokenAuthentication, SessionAuthentication]
+    #permission_classes = [IsAdminUser,]
     def post(self, request):
         data = request.data
         serializer = ChoisesSerializer(data=data)
