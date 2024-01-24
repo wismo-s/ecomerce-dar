@@ -5,7 +5,7 @@ from .views import ProductsViewSet, PoductsDetailViewSet, CategoryViewSet, Categ
 urlpatterns = [
     path('productos/', ProductsViewSet.as_view(), name='products'),
     path('productos/<slug:slug>/', PoductsDetailViewSet.as_view(), name='products-detail'),
-    path('admin/', ProductsManageViewSet.as_view(), name='admin-products'),
+    path('productos/admin/<slug:slug>/', ProductsManageViewSet.as_view(), name='admin-products'),
     path('categorias/', CategoryViewSet.as_view(), name='category'),
     path('admin/categorias/', CategoryManageViewSet.as_view(), name='admin-category'),
     path('categorias/<slug:slug>/', CategoryDetailViewSet.as_view(), name='category-detail'),
